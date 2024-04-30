@@ -18,6 +18,7 @@ export class ListParticle {
 
   // 非递增样式直接返回默认值
   private readonly UN_COUNT_STYLE_WIDTH = 20
+  private readonly DEFAULT_DRAWDISC_WIDTH = 20
   private readonly MEASURE_BASE_TEXT = '0'
   private readonly LIST_GAP = 10
 
@@ -27,7 +28,7 @@ export class ListParticle {
     this.options = draw.getOptions()
   }
 
-  public setList(listType: ListType | null, listStyle?: ListStyle) {
+  public setList(listType: ListType | null, listStyle?: ListStyle, iconPaddingLeft?: number, iconSize?: number) {
     const isReadonly = this.draw.isReadonly()
     if (isReadonly) return
     const { startIndex, endIndex } = this.range.getRange()
@@ -49,6 +50,8 @@ export class ListParticle {
       el.listId = listId
       el.listType = listType
       el.listStyle = listStyle
+      el.iconSize = iconSize ?? el.iconSize ?? 0
+      el.iconPaddingLeft = iconPaddingLeft ?? el.iconPaddingLeft ?? 0
     })
     // 光标定位
     const isSetCursor = startIndex === endIndex
@@ -126,6 +129,7 @@ export class ListParticle {
       const width = this.getListStyleWidth(ctx, curElementList)
       listStyleMap.set(curListId!, width)
     }
+    console.log(listStyleMap)
     return listStyleMap
   }
 
@@ -135,15 +139,18 @@ export class ListParticle {
   ): number {
     const { scale, checkbox } = this.options
     const startElement = listElementList[0]
+    const iconPaddingLeft = startElement.iconPaddingLeft ?? 0
     // 非递增样式返回固定值
     if (
       startElement.listStyle &&
       startElement.listStyle !== ListStyle.DECIMAL
     ) {
       if (startElement.listStyle === ListStyle.CHECKBOX) {
-        return (checkbox.width + this.LIST_GAP) * scale
+        return (checkbox.width + this.LIST_GAP + iconPaddingLeft) * scale
+      } else if (startElement.listStyle === ListStyle.DRAWDISC) {
+        return ((startElement.iconSize ?? this.DEFAULT_DRAWDISC_WIDTH) + iconPaddingLeft) * scale
       }
-      return this.UN_COUNT_STYLE_WIDTH * scale
+      return (this.UN_COUNT_STYLE_WIDTH + iconPaddingLeft) * scale
     }
     // 计算列表数量
     const count = listElementList.reduce((pre, cur) => {
@@ -158,7 +165,7 @@ export class ListParticle {
       KeyMap.PERIOD
     }`
     const textMetrics = ctx.measureText(text)
-    return Math.ceil((textMetrics.width + this.LIST_GAP) * scale)
+    return Math.ceil((textMetrics.width + this.LIST_GAP + iconPaddingLeft) * scale)
   }
 
   public drawListStyle(
@@ -177,13 +184,14 @@ export class ListParticle {
       if (element?.type !== ElementType.TAB) break
       tabWidth += defaultTabWidth * scale
     }
+
     // 列表样式渲染
     const {
       coordinate: {
         leftTop: [startX, startY]
       }
     } = position
-    const x = startX - offsetX! + tabWidth
+    const x = startX - offsetX! + tabWidth + (startElement.iconPaddingLeft ?? 0)
     const y = startY + ascent
     // 复选框样式特殊处理
     if (startElement.listStyle === ListStyle.CHECKBOX) {
@@ -202,6 +210,20 @@ export class ListParticle {
       this.draw
         .getCheckboxParticle()
         .render(ctx, checkboxRowElement, x - gap * scale, y)
+    }
+    // 绘画的实心圆 特殊处理
+    else if (startElement.listStyle === ListStyle.DRAWDISC)
+    {
+      ctx.save()
+      const iconSize = startElement.iconSize ?? this.DEFAULT_DRAWDISC_WIDTH
+      const radius = iconSize / 2
+      const centerX = x
+      const centerY = y + (position.lineHeight - position.ascent) - (position.ascent / 2) -  (radius / 2)
+      ctx.beginPath()
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
+      ctx.fillStyle = 'black'
+      ctx.fill()
+      ctx.restore()
     } else {
       let text = ''
       if (startElement.listType === ListType.UL) {

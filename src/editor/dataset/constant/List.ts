@@ -4,7 +4,8 @@ export const ulStyleMapping: Record<UlStyle, string> = {
   [UlStyle.DISC]: '•',
   [UlStyle.CIRCLE]: '◦',
   [UlStyle.SQUARE]: '▫︎',
-  [UlStyle.CHECKBOX]: '☑️'
+  [UlStyle.CHECKBOX]: '☑️',
+  [UlStyle.DRAWDISC]: '•'
 }
 
 export const listTypeElementMapping: Record<ListType, string> = {
@@ -17,5 +18,6 @@ export const listStyleCSSMapping: Record<ListStyle, string> = {
   [ListStyle.CIRCLE]: 'circle',
   [ListStyle.SQUARE]: 'square',
   [ListStyle.DECIMAL]: 'decimal',
-  [ListStyle.CHECKBOX]: 'checkbox'
+  [ListStyle.CHECKBOX]: 'checkbox',
+  [ListStyle.DRAWDISC]: 'DRAWDISC'
 }

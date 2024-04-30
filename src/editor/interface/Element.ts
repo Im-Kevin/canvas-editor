@@ -52,6 +52,14 @@ export interface IListElement {
   listStyle?: ListStyle
   listId?: string
   listWrap?: boolean
+  /**
+   * 设置列表标识的大小, 只支持DRAWDISC(单位: px)
+   */
+  iconSize?: number
+  /**
+   * 左间距(单位: px)
+   */
+  iconPaddingLeft?: number
 }
 
 export interface ITableAttr {

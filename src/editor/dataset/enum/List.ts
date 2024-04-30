@@ -7,7 +7,8 @@ export enum UlStyle {
   DISC = 'disc', // 实心圆点
   CIRCLE = 'circle', // 空心圆点
   SQUARE = 'square', // 实心方块
-  CHECKBOX = 'checkbox' // 复选框
+  CHECKBOX = 'checkbox', // 复选框
+  DRAWDISC = 'drawdisc' // 绘画的实心圆(支持设置大小)
 }
 
 export enum OlStyle {
@@ -19,5 +20,7 @@ export enum ListStyle {
   CIRCLE = UlStyle.CIRCLE,
   SQUARE = UlStyle.SQUARE,
   DECIMAL = OlStyle.DECIMAL,
-  CHECKBOX = UlStyle.CHECKBOX
+  CHECKBOX = UlStyle.CHECKBOX,
+  DRAWDISC = UlStyle.DRAWDISC
 }
+

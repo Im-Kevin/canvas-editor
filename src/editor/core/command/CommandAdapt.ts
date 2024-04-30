@@ -719,10 +719,10 @@ export class CommandAdapt {
     this.draw.render({ curIndex, isSetCursor })
   }
 
-  public list(listType: ListType | null, listStyle?: ListStyle) {
+  public list(listType: ListType | null, listStyle?: ListStyle, iconPaddingLeft?: number, iconSize?: number) {
     const isReadonly = this.draw.isReadonly()
     if (isReadonly) return
-    this.draw.getListParticle().setList(listType, listStyle)
+    this.draw.getListParticle().setList(listType, listStyle, iconPaddingLeft, iconSize)
   }
 
   public rowFlex(payload: RowFlex) {
